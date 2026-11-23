@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, StrictBool, StrictInt
+from pydantic import BaseModel, Field, StrictBool, StrictInt
 
 from .home import Home, HomeError
 
@@ -21,6 +21,10 @@ class Door(BaseModel):
 class Tv(BaseModel):
     on: StrictBool
     video_url: str | None = None
+
+
+class Command(BaseModel):
+    text: str = Field(max_length=300)
 
 
 def _run(action, *args, **kwargs) -> dict:
@@ -48,3 +52,8 @@ def set_door(body: Door):
 @app.post("/api/house/tv")
 def set_tv(body: Tv):
     return _run(home.tv, body.on, body.video_url)
+
+
+@app.post("/api/house/command")
+def run_command(body: Command):
+    return _run(home.command, body.text)

@@ -147,3 +147,38 @@ class Home:
                 self._house["tv"]["video_id"] = video_id
             self._house["tv"]["on"] = on
             return self._done("TV turned on. YouTube may need a tap to play." if on else "TV turned off.")
+
+    def command(self, text: str) -> dict:
+        """Run a plain-English request such as "turn off the kitchen lights". Returns the reply and the new state."""
+        if not isinstance(text, str) or not text.strip():
+            raise HomeError("Say what to change, for example: turn off the kitchen lights.")
+        text = text.strip()
+        low = re.sub(r"\b(please|can you|could you|would you)\b", "", text.lower()).strip(" .?!,")
+        low = re.sub(r"\s+", " ", low)
+        tv = r"(?:the |my |our )?(?:living room )?(?:tv|television)"
+        match = re.fullmatch(rf"(?:(?:turn|switch|power)\s+)?(?P<power>on|off)\s+{tv}", low) \
+            or re.fullmatch(rf"(?:(?:turn|switch|power)\s+)?{tv}\s+(?P<power>on|off)", low)
+        if match:
+            house = self.tv(match["power"] == "on")
+            return {"reply": house["last_action"], "house": house}
+        # The original text keeps the case-sensitive video ID.
+        match = re.fullmatch(rf"(?:please\s+)?play\s+(?P<url>https://\S+)\s+on\s+{tv}[.!?]?", text, re.I)
+        if match:
+            house = self.tv(True, match["url"])
+            return {"reply": house["last_action"], "house": house}
+        light = r"(?:(?:the|all|all the|my|our)\s+)?(?P<room>[a-z ]*?)(?:\s+)?(?:lights?|lamps?)"
+        match = re.fullmatch(rf"(?:(?:turn|switch)\s+)?(?P<power>on|off)\s+{light}", low) \
+            or re.fullmatch(rf"(?:(?:turn|switch)\s+)?{light}\s+(?P<power>on|off)", low) \
+            or re.fullmatch(r"(?:(?:turn|switch)\s+)?(?P<power>on|off)\s+(?:the\s+)?(?:lights?|lamps?)\s+in\s+(?:the\s+)?(?P<room>[a-z ]+)", low)
+        if match:
+            house = self.lights(match["room"].strip() or "all", on=match["power"] == "on")
+            return {"reply": house["last_action"], "house": house}
+        match = re.fullmatch(rf"(?:dim|set)\s+{light}\s+to\s+(?P<brightness>\d+)\s*(?:%|percent)", low)
+        if match:
+            house = self.lights(match["room"].strip() or "all", brightness=int(match["brightness"]))
+            return {"reply": house["last_action"], "house": house}
+        match = re.fullmatch(r"(?P<action>open|close|shut)\s+(?:the\s+)?(?P<door>front|bedroom)\s+door", low)
+        if match:
+            house = self.door(match["door"], match["action"] == "open")
+            return {"reply": house["last_action"], "house": house}
+        raise HomeError("I could not match that. Try: turn off the kitchen lights, set bedroom lights to 30 percent, open the front door, turn on the TV.")

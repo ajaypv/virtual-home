@@ -26,6 +26,7 @@ export const api = {
     lights: (room: HouseRoom | 'all', change: { on?: boolean; brightness?: number }) =>
       request<HouseState>('/house/lights', { room, ...change }),
     door: (door: HouseDoor, open: boolean) => request<HouseState>('/house/door', { door, open }),
+    command: (text: string) => request<{ reply: string; house: HouseState }>('/house/command', { text }),
     tv: (on: boolean, video_url?: string) => request<HouseState>('/house/tv', { on, ...(video_url ? { video_url } : {}) }),
   },
 }

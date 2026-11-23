@@ -30,6 +30,19 @@ Open http://localhost:5190. Set `HOME_API` to point the dev server at a backend 
 
 Tests: `cd backend && uv run pytest` and `cd frontend && npm test`.
 
+## Ask the house in plain English
+
+Type into the **Ask the house** box, or call the API. No AI key is needed; requests are matched by rules, and anything it does not understand is rejected without changing the house.
+
+- "Turn off the kitchen lights", "turn on all lights", "turn off the lights in the reading nook"
+- "Set bedroom lights to 30 percent"
+- "Open the front door", "close the bedroom door"
+- "Turn on the TV", "turn off the television", "play https://youtu.be/M7lc1UVf-VE on the TV"
+
+```bash
+curl -X POST localhost:5190/api/house/command -H "Content-Type: application/json" -d '{"text":"turn off the kitchen lights"}'
+```
+
 ## Control it from anything
 
 The page polls the backend every second, so any client that calls the API changes the house you are looking at, for example an AI agent or a script.
@@ -37,6 +50,7 @@ The page polls the backend every second, so any client that calls the API change
 | Request | Body |
 |---|---|
 | `GET /api/house` | none |
+| `POST /api/house/command` | `{"text": "turn off the kitchen lights"}` |
 | `POST /api/house/lights` | `{"room": "kitchen", "on": false}` or `{"room": "all", "brightness": 30}` |
 | `POST /api/house/door` | `{"door": "front", "open": true}` |
 | `POST /api/house/tv` | `{"on": true, "video_url": "https://youtu.be/M7lc1UVf-VE"}` |
