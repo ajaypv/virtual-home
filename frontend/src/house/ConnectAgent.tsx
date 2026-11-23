@@ -39,6 +39,10 @@ export function ConnectAgent({ homeId }: { homeId: string }) {
         <CopyField label="Claude Code" value={`claude mcp add --transport http virtual-home ${mcpUrl}`} />
         <p>Other agents: add a remote (Streamable HTTP) MCP server with the URL above. Tools: <code>get_house</code>, <code>set_lights</code>, <code>set_door</code>, <code>set_tv</code>.</p>
         <CopyField label="Link to watch this home" value={location.href} />
+        <p className="house-credit">
+          Virtual devices only. Drag to orbit, scroll to zoom. Models:{' '}
+          <a href="https://3dassets.dev/packs/cozy-home-interiors" target="_blank" rel="noopener noreferrer">3D Assets · CC0</a>.
+        </p>
         {getPrivateHome() === homeId && (
           <button
             type="button"

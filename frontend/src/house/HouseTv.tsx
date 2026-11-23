@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Power, Tv } from 'lucide-react'
+import { Tv } from 'lucide-react'
 import { api } from '@/api'
 import type { HouseState } from './types'
 import { youtubeEmbedUrl } from './youtube'
@@ -44,21 +44,22 @@ export function HouseTv({ homeId, house, onUpdate, onWatch, unavailable }: {
   }
   return (
     <div className="house-tv-controls">
-      <span className="house-tv-label"><Tv size={16} aria-hidden="true" />Living room TV <strong>{tv.on ? 'On' : 'Off'}</strong></span>
-      <button type="button" disabled={working || unavailable} aria-label={tv.on ? 'Turn TV off' : 'Turn TV on'} onClick={() => void change(!tv.on)}>
-        <Power size={15} aria-hidden="true" />{working ? 'Updating...' : tv.on ? 'Turn off' : 'Turn on'}
+      <button type="button" aria-pressed={tv.on} disabled={working || unavailable} aria-label={tv.on ? 'Turn TV off' : 'Turn TV on'} onClick={() => void change(!tv.on)}>
+        <Tv size={15} aria-hidden="true" />{working ? 'Updating...' : tv.on ? 'TV on' : 'TV off'}
       </button>
-      <button type="button" onClick={onWatch}>Watch TV</button>
+      <button type="button" onClick={onWatch}>Watch</button>
       <details>
-        <summary>YouTube video</summary>
+        <summary>Video</summary>
         <form onSubmit={(e) => { e.preventDefault(); void change(true, video.trim()) }}>
           <label htmlFor="house-youtube">YouTube link or video ID</label>
           <input id="house-youtube" required value={video} onChange={(e) => setVideo(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." disabled={working} />
           <button type="submit" disabled={working || unavailable || !video.trim()}>Play on TV</button>
-          <p>Starts muted. Use the YouTube controls to play, unmute or enter fullscreen. Some videos do not allow embedding.</p>
+          <p>
+            Starts muted; tap the player to play or unmute. Some videos do not allow embedding.
+            {tv.on && <> If this browser cannot play it, <a href={`https://www.youtube.com/watch?v=${encodeURIComponent(tv.video_id)}`} target="_blank" rel="noopener noreferrer">open on YouTube</a>.</>}
+          </p>
         </form>
       </details>
-      {tv.on && <span className="house-tv-hint">Muted by default. Tap the player to play or unmute. If this browser cannot play it, <a href={`https://www.youtube.com/watch?v=${encodeURIComponent(tv.video_id)}`} target="_blank" rel="noopener noreferrer">open on YouTube</a>.</span>}
       {error && <span className="house-tv-error" role="alert">{error}</span>}
     </div>
   )

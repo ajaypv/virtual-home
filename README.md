@@ -104,8 +104,8 @@ The first deploy creates the `Home` Durable Object class (SQLite-backed, availab
 - The TV embeds YouTube's own player (privacy-enhanced domain, muted autoplay). It needs internet access, loads only while the TV is on, and does not download video. Browsers may need a tap to play or unmute, and some videos do not allow embedding. A browser without H.264/VP9 support shows a black player.
 - WebGL is required.
 
-## Credits
+## Credits and license
 
-The house, door, TV and cabinet models are unchanged CC0 downloads from [Cozy Home Interiors by 3D Assets](https://3dassets.dev/packs/cozy-home-interiors). Sources, hashes and license are in [`frontend/public/models/cozy-home`](frontend/public/models/cozy-home).
+The code is [MIT licensed](LICENSE). The house, door, TV and cabinet models are unchanged CC0 downloads from [Cozy Home Interiors by 3D Assets](https://3dassets.dev/packs/cozy-home-interiors). Sources, hashes and license are in [`frontend/public/models/cozy-home`](frontend/public/models/cozy-home).
 
 This was extracted from [Aangan](https://github.com/ajaypv/aangan), where an AI assistant controls the same house by voice and chat.

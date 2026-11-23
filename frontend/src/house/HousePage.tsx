@@ -36,45 +36,42 @@ export function HousePage({ homeId }: { homeId: string }) {
         <ConnectAgent homeId={homeId} />
       </header>
       <section className="house-intro" aria-label="House connection">
-        <div className="house-eyebrow">YOUR VIRTUAL HOUSE</div>
         <h1>Cozy home.</h1>
-        <p>Drag to explore.<br />Tap to change it.</p>
         <span className={`house-connection ${house && !error ? 'is-live' : ''}`} role="status">
           <span aria-hidden="true" />{error ? 'Sync unavailable' : house ? 'Live' : 'Connecting...'}
         </span>
+        {house && <p className="house-action" role="status">{house.last_action}</p>}
       </section>
       {error && <div className="house-sync-error" role="alert">
         <span>{error} {house ? 'Showing the last confirmed state.' : ''}</span>
         <button type="button" onClick={reconnect}>Retry connection</button>
       </div>}
       <footer className="house-footer">
-        {house && <HouseTv homeId={homeId} house={house} unavailable={error !== null} onWatch={() => setFocus('tv')} onUpdate={merge} />}
+        {house && <div className="house-dock">
+          <HouseTv homeId={homeId} house={house} unavailable={error !== null} onWatch={() => setFocus('tv')} onUpdate={merge} />
+          <div className="house-doors" aria-label="Doors">{HOUSE_DOORS.map((key) => (
+            <button type="button" key={key} aria-pressed={house.doors[key].open} disabled={busy || error !== null} onClick={() => void apply(() => api.house.door(homeId, key, !house.doors[key].open))}>
+              <DoorOpen size={15} aria-hidden="true" />{house.doors[key].name}<small>{house.doors[key].open ? 'open' : 'closed'}</small>
+            </button>
+          ))}</div>
+          <button type="button" className="house-lights" aria-label={`${targetOn ? 'Turn off' : 'Turn on'} ${targetLabel} ${lightTarget === 'all' ? 'lights' : 'light'}`} disabled={busy || error !== null} onClick={() => void apply(() => api.house.lights(homeId, lightTarget, { on: !targetOn }))}>
+            <Lightbulb size={15} aria-hidden="true" />
+            <span className="house-lights-full">{targetOn ? 'Turn off' : 'Turn on'} {targetLabel} {lightTarget === 'all' ? 'lights' : 'light'}</span>
+            <span className="house-lights-short">Lights</span>
+          </button>
+        </div>}
         {house && <nav className="house-rooms" aria-label="Focus a room">
-          <button type="button" aria-pressed={focus === 'all'} onClick={() => setFocus('all')}>
-            <House size={17} aria-hidden="true" /><span>Whole house<small>{lit} of 4 lights on</small></span>
+          <button type="button" aria-pressed={focus === 'all'} aria-label={`Whole house, ${lit} of 4 lights on`} onClick={() => setFocus('all')}>
+            <House size={16} aria-hidden="true" />Whole house
           </button>
           {HOUSE_ROOMS.map((key) => {
             const light = house.lights[key]
-            return <button type="button" key={key} className={light.on ? 'light-on' : ''} aria-pressed={focus === key} onClick={() => setFocus(key)}>
-              <Lightbulb size={17} aria-hidden="true" /><span>{light.name}<small>{light.on ? `${light.brightness}% brightness` : 'Light off'}</small></span>
+            return <button type="button" key={key} className={light.on ? 'light-on' : ''} aria-pressed={focus === key} aria-label={`${light.name}, ${light.on ? `${light.brightness}% brightness` : 'light off'}`} onClick={() => setFocus(key)}>
+              <Lightbulb size={16} aria-hidden="true" />{light.name}
             </button>
           })}
         </nav>}
-        <div className="house-bottom">
-          <div className="house-current">
-            <p className="house-action" role="status">{house?.last_action ?? 'Drag to explore. Scroll or pinch to zoom.'}</p>
-            {house && <div className="house-doors" aria-label="Doors">{HOUSE_DOORS.map((key) => (
-              <button type="button" key={key} disabled={busy || error !== null} onClick={() => void apply(() => api.house.door(homeId, key, !house.doors[key].open))}>
-                <DoorOpen size={13} aria-hidden="true" />{house.doors[key].name}: {house.doors[key].open ? 'open' : 'closed'}
-              </button>
-            ))}</div>}
-            {actionError && <p className="house-action-error" role="alert">{actionError}</p>}
-          </div>
-          {house && <button type="button" className="house-ask" disabled={busy || error !== null} onClick={() => void apply(() => api.house.lights(homeId, lightTarget, { on: !targetOn }))}>
-            {targetOn ? 'Turn off' : 'Turn on'} {targetLabel} {lightTarget === 'all' ? 'lights' : 'light'}<Lightbulb size={17} aria-hidden="true" />
-          </button>}
-        </div>
-        <div className="house-fineprint"><span>Virtual devices only · Drag to orbit · Scroll to zoom</span><a href="https://3dassets.dev/packs/cozy-home-interiors" target="_blank" rel="noopener noreferrer">3D Assets · CC0</a></div>
+        {actionError && <p className="house-action-error" role="alert">{actionError}</p>}
       </footer>
     </main>
   )
