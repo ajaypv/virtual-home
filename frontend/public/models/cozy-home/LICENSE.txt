@@ -1,0 +1,30 @@
+Cozy Home Interiors - CC0 1.0 Universal
+Contributor: 3D Assets (@3dassets), https://3dassets.dev/u/3dassets
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Downloaded 2026-11-21. Models are self-contained, with no external textures.
+The contributor reports AI-assisted model creation.
+
+house.glb - Two-Storey Cutaway Home
+Source: https://3dassets.dev/assets/cozy-home-interiors-two-storey-cutaway-home-4a617fd1
+Download: https://cdn.3dassets.dev/assets/17237/v1/model.glb
+SHA256: 2c1086a40368a682b0b200a33430cefbc7e2f601399bad748640a803b9661d32
+
+door.glb - Wall Front Door 2 m
+Source: https://3dassets.dev/assets/cozy-home-interiors-wall-front-door-2m-067c8287
+Download: https://cdn.3dassets.dev/assets/17091/v1/model.glb
+SHA256: fff3e4b02fd7a974ef911e10f5281be474c050a1d2411287cf987a9d13d117e5
+
+tv.glb - TV
+Source: https://3dassets.dev/assets/cozy-home-interiors-tv-98070018
+Download: https://cdn.3dassets.dev/assets/17147/v1/model.glb
+SHA256: 97b7c64b19eb9dd89d4daa3ad0fc4c781083046385cb8858e35a02821caa0632
+
+tv-unit.glb - TV Unit
+Source: https://3dassets.dev/assets/cozy-home-interiors-tv-unit-f9dd536d
+Download: https://cdn.3dassets.dev/assets/17145/v1/model.glb
+SHA256: b7806eae5cca268dad17ea5925a8331da90879c8db26b4df9a33704fd9701a5f
+
+The original GLB files are distributed unchanged. This app places two copies of
+the door module and a TV with cabinet alongside the house, adding runtime lighting,
+hinge animation and a YouTube iframe on the TV screen.
+No attribution is required under CC0; these credits are retained for provenance.
