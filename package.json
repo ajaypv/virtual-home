@@ -1,0 +1,25 @@
+{
+  "name": "virtual-home",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "dev": "wrangler dev",
+    "dev:ui": "npm --prefix frontend run dev",
+    "deploy": "npm run build && wrangler deploy",
+    "types": "wrangler types",
+    "typecheck": "wrangler types && tsc -p worker/tsconfig.json",
+    "smoke": "node scripts/smoke.mjs",
+    "test": "node --test --experimental-strip-types worker/test/*.test.ts && npm --prefix frontend test"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "wrangler": "^4.166.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "agents": "^0.34.0",
+    "zod": "^4.6.7"
+  }
+}

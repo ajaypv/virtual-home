@@ -19,12 +19,23 @@
 .house-tv-error { color: #ffbb9f; }
 .house-page button, .house-page a { -webkit-tap-highlight-color: transparent; }
 .house-page :is(button, a):focus-visible { outline: 2px solid #f5d291; outline-offset: 4px; }
-.house-header { position: absolute; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 26px 36px; pointer-events: none; }
+.house-header { position: absolute; z-index: 5; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: flex-start; padding: 26px 36px; pointer-events: none; }
 .house-header a { pointer-events: auto; }
 .house-brand { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; font-size: 12px; font-weight: 750; letter-spacing: .2em; }
 .house-eyebrow { display: block; font-size: 10px; font-weight: 550; letter-spacing: .15em; color: #a7bfbc; }
 .house-brand .house-eyebrow { margin-top: 3px; font-size: 9px; letter-spacing: .07em; }
 .house-link { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid #ffffff24; border-radius: 30px; font-size: 12px; background: #14272cdd; text-decoration: none; color: inherit; }
+.house-connect { position: relative; pointer-events: auto; }
+.house-connect summary { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; padding: 0 16px; border: 1px solid #ffffff24; border-radius: 30px; font-size: 12px; background: #14272cdd; cursor: pointer; list-style: none; }
+.house-connect summary::-webkit-details-marker { display: none; }
+.house-connect-panel { position: absolute; top: calc(100% + 10px); right: 0; width: 380px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 120px); overflow: auto; padding: 18px; border: 1px solid #ffffff30; border-radius: 16px; background: #172d33; box-shadow: 0 10px 40px #0008; font-size: 12px; line-height: 1.6; color: #d5e1de; }
+.house-connect-panel p { margin: 0 0 14px; }
+.house-connect-panel code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; word-break: break-all; }
+.house-copy { margin-bottom: 14px; }
+.house-copy > span { display: block; margin-bottom: 5px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #93aaa6; }
+.house-copy > div { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 12px; border: 1px solid #ffffff24; border-radius: 10px; background: #102026; }
+.house-copy code { flex: 1; min-width: 0; }
+.house-copy button { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border: 1px solid #ffffff30; border-radius: 8px; background: transparent; color: inherit; cursor: pointer; }
 .house-intro { position: absolute; top: 115px; left: 36px; pointer-events: none; }
 .house-intro h1 { margin: 10px 0; font-family: Georgia, serif; font-size: clamp(34px, 4vw, 54px); font-weight: 400; letter-spacing: -.04em; line-height: 1.05; }
 .house-intro p { margin: 15px 0 18px; font-size: 13px; line-height: 1.7; color: #bbccc9; }

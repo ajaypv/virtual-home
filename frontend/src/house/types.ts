@@ -3,7 +3,7 @@ export type HouseDoor = 'front' | 'bedroom'
 export type HouseView = HouseRoom | 'all' | 'tv'
 
 export interface HouseState {
-  id: 'cozy-home'
+  id: string
   name: string
   revision: number
   lights: Record<HouseRoom, { name: string; on: boolean; brightness: number }>

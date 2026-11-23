@@ -17,7 +17,8 @@ export function TvScreen({ tv }: { tv: HouseState['tv'] | undefined }) {
     referrerPolicy="strict-origin-when-cross-origin" />
 }
 
-export function HouseTv({ house, onUpdate, onWatch, unavailable }: {
+export function HouseTv({ homeId, house, onUpdate, onWatch, unavailable }: {
+  homeId: string
   house: HouseState
   onUpdate: (house: HouseState) => void
   onWatch: () => void
@@ -31,7 +32,7 @@ export function HouseTv({ house, onUpdate, onWatch, unavailable }: {
     setWorking(true)
     setError(null)
     try {
-      const next = await api.house.tv(on, videoUrl)
+      const next = await api.house.tv(homeId, on, videoUrl)
       if (!next.tv) throw new Error('The server did not return the updated TV state.')
       onUpdate(next)
       if (on) onWatch()

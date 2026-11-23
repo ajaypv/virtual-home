@@ -20,13 +20,19 @@ async function request<T>(path: string, body?: unknown, signal?: AbortSignal): P
   return res.json() as Promise<T>
 }
 
+const home = (id: string) => `/homes/${encodeURIComponent(id)}`
+
 export const api = {
   house: {
-    get: (signal?: AbortSignal) => request<HouseState>('/house', undefined, signal),
-    lights: (room: HouseRoom | 'all', change: { on?: boolean; brightness?: number }) =>
-      request<HouseState>('/house/lights', { room, ...change }),
-    door: (door: HouseDoor, open: boolean) => request<HouseState>('/house/door', { door, open }),
-    command: (text: string) => request<{ reply: string; house: HouseState }>('/house/command', { text }),
-    tv: (on: boolean, video_url?: string) => request<HouseState>('/house/tv', { on, ...(video_url ? { video_url } : {}) }),
+    get: (id: string, signal?: AbortSignal) => request<HouseState>(home(id), undefined, signal),
+    lights: (id: string, room: HouseRoom | 'all', change: { on?: boolean; brightness?: number }) =>
+      request<HouseState>(`${home(id)}/lights`, { room, ...change }),
+    door: (id: string, door: HouseDoor, open: boolean) => request<HouseState>(`${home(id)}/door`, { door, open }),
+    tv: (id: string, on: boolean, video_url?: string) => request<HouseState>(`${home(id)}/tv`, { on, ...(video_url ? { video_url } : {}) }),
+    command: (id: string, text: string) => request<{ reply: string; house: HouseState }>(`${home(id)}/command`, { text }),
   },
+}
+
+export function socketUrl(id: string): string {
+  return `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/api${home(id)}/ws`
 }
