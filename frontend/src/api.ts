@@ -29,7 +29,14 @@ export const api = {
       request<HouseState>(`${home(id)}/lights`, { room, ...change }),
     door: (id: string, door: HouseDoor, open: boolean) => request<HouseState>(`${home(id)}/door`, { door, open }),
     tv: (id: string, on: boolean, video_url?: string) => request<HouseState>(`${home(id)}/tv`, { on, ...(video_url ? { video_url } : {}) }),
-    command: (id: string, text: string) => request<{ reply: string; house: HouseState }>(`${home(id)}/command`, { text }),
+    /** Delete the home. Never throws: a home that is already gone is the outcome we want. */
+    remove: async (id: string): Promise<void> => {
+      try {
+        await fetch(`/api${home(id)}`, { method: 'DELETE' })
+      } catch {
+        // offline: the server drops idle homes by itself
+      }
+    },
   },
 }
 

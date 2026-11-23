@@ -6,7 +6,7 @@ It runs on Cloudflare Workers. There is no sign-in and no API key: open the site
 
 ## How people use it
 
-1. Open the site and choose **Create a private home** (random ID) or open a home by ID.
+1. Open the site and choose **Create a private home** (random ID) or open a home by ID. Your private home is remembered in this browser: refreshing, or coming back to the site later, takes you to the same one.
 2. In the home, open **Connect an AI agent** and copy the MCP URL or the ready-made `claude mcp add` command.
 3. Ask your agent to "turn off the kitchen lights", "open the front door" or "put on `https://youtu.be/...`". The house on screen changes live.
 
@@ -39,7 +39,10 @@ If everyone shared one house, one tester's agent would overwrite another's. Each
 - **Create a private home** generates a random 10-character ID that is hard to guess. Use it for your own tests.
 - A simple ID like `demo` is shared with everyone who types it. Fine for a demo, not for private use.
 
-A home nobody has changed for 30 days is deleted automatically.
+A home nobody has changed for 7 days is deleted automatically. You can also delete one yourself:
+
+- **Start over with a new home** on the landing page deletes your current private home and creates a new one, so unused homes do not pile up.
+- **Delete this home** in the *Connect an AI agent* panel (shown in the browser that created the home) deletes it immediately. Anyone still watching it is sent back to the landing page.
 
 ## REST API
 
@@ -51,10 +54,11 @@ The same operations are available without MCP. Errors return `422` with `{"detai
 | `POST /api/homes/<id>/lights` | `{"room": "kitchen", "on": false}` or `{"room": "all", "brightness": 30}` |
 | `POST /api/homes/<id>/door` | `{"door": "front", "open": true}` |
 | `POST /api/homes/<id>/tv` | `{"on": true, "video_url": "https://youtu.be/M7lc1UVf-VE"}` |
-| `POST /api/homes/<id>/command` | `{"text": "turn off the kitchen lights"}` |
+| `POST /api/homes/<id>/command` | `{"text": "turn off the kitchen lights"}`: plain English matched by rules, with no AI model or key |
+| `DELETE /api/homes/<id>` | none: deletes the home, watchers are disconnected, the next visit starts a fresh house |
 | `GET /api/homes/<id>/ws` | WebSocket: the current house on connect, then after every change |
 
-The **Ask the house** box on the page uses `command`: plain English matched by rules, with no AI model or key.
+The page itself has buttons for lights, doors and the TV; there is no text box.
 
 ## Run it locally
 

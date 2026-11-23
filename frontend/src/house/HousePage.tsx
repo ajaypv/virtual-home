@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { DoorOpen, House, Lightbulb, Send } from 'lucide-react'
+import { DoorOpen, House, Lightbulb } from 'lucide-react'
 import { api } from '@/api'
 import { useHome } from '@/useHome'
 import { ConnectAgent } from './ConnectAgent'
@@ -12,7 +12,6 @@ export function HousePage({ homeId }: { homeId: string }) {
   const { house, error, merge, reconnect } = useHome(homeId)
   const [focus, setFocus] = useState<HouseView>('all')
   const [busy, setBusy] = useState(false)
-  const [command, setCommand] = useState('')
   const [actionError, setActionError] = useState<string | null>(null)
   async function apply(run: () => Promise<HouseState>) {
     setBusy(true)
@@ -49,20 +48,6 @@ export function HousePage({ homeId }: { homeId: string }) {
         <button type="button" onClick={reconnect}>Retry connection</button>
       </div>}
       <footer className="house-footer">
-        {house && <form className="house-command" onSubmit={(e) => {
-          e.preventDefault()
-          const text = command.trim()
-          if (!text) return
-          void apply(async () => {
-            const result = await api.house.command(homeId, text)
-            setCommand('')
-            return result.house
-          })
-        }}>
-          <label htmlFor="house-command">Ask the house</label>
-          <input id="house-command" value={command} maxLength={300} onChange={(e) => setCommand(e.target.value)} placeholder="Try: turn off the kitchen lights" disabled={busy || error !== null} />
-          <button type="submit" disabled={busy || error !== null || !command.trim()}><Send size={15} aria-hidden="true" />Send</button>
-        </form>}
         {house && <HouseTv homeId={homeId} house={house} unavailable={error !== null} onWatch={() => setFocus('tv')} onUpdate={merge} />}
         {house && <nav className="house-rooms" aria-label="Focus a room">
           <button type="button" aria-pressed={focus === 'all'} onClick={() => setFocus('all')}>

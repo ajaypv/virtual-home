@@ -48,10 +48,15 @@ export function useHome(homeId: string) {
           // ignore a malformed frame
         }
       }
-      current.onclose = () => {
+      current.onclose = (event) => {
         window.clearInterval(ping)
         window.clearTimeout(silence)
         if (disposed) return
+        if (event.code === 4000) {
+          // The home was deleted (by its owner or another viewer): go back and choose or create one.
+          location.assign('/')
+          return
+        }
         failures += 1
         setError('Live connection lost. Reconnecting...')
         retry = window.setTimeout(connect, Math.min(1000 * 2 ** failures, 10_000))

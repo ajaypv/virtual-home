@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { Check, Copy, Plug } from 'lucide-react'
+import { Check, Copy, Plug, Trash2 } from 'lucide-react'
+import { api } from '@/api'
+import { clearPrivateHome, getPrivateHome } from '@/privateHome'
 
 function CopyField({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false)
@@ -37,6 +39,21 @@ export function ConnectAgent({ homeId }: { homeId: string }) {
         <CopyField label="Claude Code" value={`claude mcp add --transport http virtual-home ${mcpUrl}`} />
         <p>Other agents: add a remote (Streamable HTTP) MCP server with the URL above. Tools: <code>get_house</code>, <code>set_lights</code>, <code>set_door</code>, <code>set_tv</code>.</p>
         <CopyField label="Link to watch this home" value={location.href} />
+        {getPrivateHome() === homeId && (
+          <button
+            type="button"
+            className="house-delete"
+            onClick={() => {
+              if (!window.confirm('Delete this home and everything in it? An agent connected to it will start from a fresh empty home.')) return
+              void api.house.remove(homeId).then(() => {
+                clearPrivateHome()
+                location.assign('/')
+              })
+            }}
+          >
+            <Trash2 size={14} aria-hidden="true" />Delete this home
+          </button>
+        )}
       </div>
     </details>
   )

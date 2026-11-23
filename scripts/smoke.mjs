@@ -64,6 +64,14 @@ assert.equal((await rest(a, '/command', { text: 'make me a sandwich' })).status,
 assert.equal((await rest('Bad_ID')).status, 404)
 assert.equal((await fetch(`${base}/mcp/Bad_ID`, { method: 'POST' })).status, 404)
 
+// Deleting a home tells its watchers, resets it, and leaves other homes alone.
+const closedWith = new Promise((resolve) => { watcherB.socket.onclose = (event) => resolve(event.code) })
+assert.equal((await fetch(`${base}/api/homes/${b}`, { method: 'DELETE' })).status, 200)
+assert.equal(await closedWith, 4000, 'a watcher of a deleted home is told')
+const reset = (await rest(b)).body
+assert.equal(reset.revision, 0)
+assert.equal(reset.tv.on, false, 'a deleted home starts fresh')
+assert.equal((await rest(a)).body.doors.front.open, true, 'home A survives the deletion of B')
+
 watcherA.socket.close()
-watcherB.socket.close()
 console.log(`OK: ${base} (homes ${a}, ${b})`)

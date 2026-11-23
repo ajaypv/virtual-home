@@ -26,6 +26,10 @@ async function homeApi(request: Request, env: Env, id: string, action: string): 
     return stub.fetch(`https://home.internal/ws?id=${encodeURIComponent(id)}`, request)
   }
   if (action === '') {
+    if (request.method === 'DELETE') {
+      await stub.destroy()
+      return json({ deleted: true })
+    }
     if (request.method !== 'GET') return json({ detail: 'Method not allowed.' }, 405)
     return json(await stub.getState(id))
   }

@@ -4,7 +4,7 @@ import { HomeError, initialHouse, runCommand, setDoor, setLights, setTv, type Ho
 export type HomeResult = { ok: true; house: House; reply: string } | { ok: false; error: string }
 
 // A home nobody has changed for this long is deleted, so abandoned test homes do not pile up.
-const IDLE_TTL_MS = 30 * 24 * 60 * 60 * 1000
+const IDLE_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
 /** One virtual home. Each home ID maps to its own instance, so people testing at the same time never touch each other's house.
  *  Methods return a result instead of throwing: errors thrown across a Durable Object RPC call lose their class. */
@@ -65,6 +65,20 @@ export class Home extends DurableObject<Env> {
 
   command(id: string, text: unknown) {
     return this.change(id, (house) => runCommand(house, text).house)
+  }
+
+  /** Delete the home: watchers are told, and the next visit starts a fresh default house. */
+  async destroy(): Promise<void> {
+    for (const socket of this.ctx.getWebSockets()) {
+      try {
+        socket.close(4000, 'deleted')
+      } catch {
+        // already closing
+      }
+    }
+    this.house = null
+    await this.ctx.storage.deleteAlarm()
+    await this.ctx.storage.deleteAll()
   }
 
   /** WebSocket upgrade: the viewer gets the current house at once, then every change as it happens. */
