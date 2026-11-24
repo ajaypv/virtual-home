@@ -2,6 +2,8 @@
 
 A furnished, interactive 3D house in the browser that **AI agents can control over MCP**. Switch lights on and off or dim them, open and close doors, and play a YouTube video on the living room TV. Everything is simulated: no physical device is ever controlled.
 
+Use it as a sandbox to test MCP tool calls made by an agent you are building. Connect your agent to a home, ask it to use the tools, and watch the results appear in the 3D house in real time. You can also use an MCP client or inspector to call the tools directly.
+
 It runs on Cloudflare Workers. There is no sign-in and no API key: open the site, create a home, and point any MCP-capable agent at it.
 
 ## How people use it
@@ -19,6 +21,21 @@ Each home has its own page and its own MCP endpoint:
 
 A home ID is 3-32 lowercase letters, digits or hyphens.
 
+### Test your agent's MCP tool calls
+
+1. Open a deployed instance or [run it locally](#run-it-locally). Create a home and keep its page open.
+2. Copy the MCP URL from **Connect an AI agent**. Configure your agent's MCP client to use that URL with **Streamable HTTP**. No API key is required.
+3. Have your agent discover the tools, then ask it to turn off the kitchen lights or open the front door. Check that the corresponding change appears on the home page.
+4. Ask the agent to call `get_house` to verify the resulting state. Successful calls return the house state as structured content; invalid calls return an error.
+
+For example, with Claude Code, replace the URL with the one copied from your home:
+
+```bash
+claude mcp add --transport http virtual-home https://YOUR-HOST/mcp/YOUR-HOME-ID
+```
+
+You can also connect an [MCP Inspector](https://github.com/modelcontextprotocol/inspector) to the same URL, list the tools, and invoke them manually. Use a separate home ID for each independent test; agents using the same ID share the same state.
+
 ### MCP tools
 
 | Tool | Does |
@@ -34,7 +51,7 @@ Every tool declares input and output schemas, and rejects bad input without chan
 
 If everyone shared one house, one tester's agent would overwrite another's. Each home ID maps to its own [Durable Object](https://developers.cloudflare.com/durable-objects/), which holds that house's state and is the only thing that can change it. Requests are serialised per home, so two agents in the same home do not race either, and homes never see each other's changes.
 
-**There is no login, so the ID is the only protection.** Anyone who knows a home's ID can watch and control it:
+**There is no login, so the ID is the only protection.** Anyone who knows a home's ID can watch, control or delete it. Do not use the home to test sensitive data:
 
 - **Create a private home** generates a random 10-character ID that is hard to guess. Use it for your own tests.
 - A simple ID like `demo` is shared with everyone who types it. Fine for a demo, not for private use.
